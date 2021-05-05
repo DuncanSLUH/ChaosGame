@@ -49,13 +49,13 @@ public class ChaosGame extends JPanel {
     }
 
     @Override
-    public void paintComponent(Graphics gg) {
-        super.paintComponent(gg);
-        Graphics2D g = (Graphics2D) gg;
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    public void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
+        Graphics2D graphics2D = (Graphics2D) graphics;
+        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         for (Point p : stack) {
-            g.fillOval(p.x, p.y, 1, 1);
+            graphics2D.fillOval(p.x, p.y, 1, 1);
             amount++;
             System.out.println("Printed point " + amount + " at (" + p.x + ", " + p.y + ")");
         }
