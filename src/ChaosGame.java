@@ -12,14 +12,11 @@ public class ChaosGame extends JPanel {
         return new Point((a.x + b.x) / 2, (a.y + b.y) / 2);
     }
 
-
-    Stack<Point> stack = new Stack<>();
-    Point[] points = new Point[3];
-
-    Random r = new Random();
-
-    // amount of points drawn
-    int amount = 0;
+    // stacks are perfect for this
+    private final Stack<Point> stack = new Stack<>();
+    private final Point[] points = new Point[3];
+    private final Random r = new Random();
+    private int amount = 0;
 
     public ChaosGame() {
         // this also controls the size of the triangle!!
@@ -38,30 +35,17 @@ public class ChaosGame extends JPanel {
 
         new Timer(10, (ActionEvent e) -> {
             // add 1000 at a time to make it faster
-            for (int i = 0; i < 1000; i++) addPoint();
+            for (int i = 0; i < 1000; i++) {
+                try {
+                    Point latestPoint = stack.peek();
+                    Point towardPoint = points[r.nextInt(3)];
+                    stack.add(midpoint(latestPoint, towardPoint));
+                } catch (EmptyStackException ex) {
+                    ex.printStackTrace();
+                }
+            }
             repaint();
         }).start();
-    }
-
-    // add a point to be drawn
-    private void addPoint() {
-        try {
-            int towards = r.nextInt(3);
-            Point p1 = stack.peek();
-            Point p2 = points[towards];
-            stack.add(midpoint(p1, p2));
-        } catch (EmptyStackException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // draw a circle and print out info to console
-    void drawPoints(Graphics2D g) {
-        for (Point p : stack) {
-            g.fillOval(p.x, p.y, 1, 1);
-            amount++;
-            System.out.println("Printed point " + amount + " at (" + p.x + ", " + p.y + ")");
-        }
     }
 
     @Override
@@ -70,19 +54,21 @@ public class ChaosGame extends JPanel {
         Graphics2D g = (Graphics2D) gg;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        drawPoints(g);
+        for (Point p : stack) {
+            g.fillOval(p.x, p.y, 1, 1);
+            amount++;
+            System.out.println("Printed point " + amount + " at (" + p.x + ", " + p.y + ")");
+        }
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame f = new JFrame();
-            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            f.setTitle("");
-            f.setResizable(false);
-            f.add(new ChaosGame(), BorderLayout.CENTER);
-            f.pack();
-            f.setLocationRelativeTo(null);
-            f.setVisible(true);
-        });
+        JFrame f = new JFrame();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setTitle("");
+        f.setResizable(false);
+        f.add(new ChaosGame(), BorderLayout.CENTER);
+        f.pack();
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);
     }
 }
